@@ -1,114 +1,105 @@
-var $tbody = document.querySelector("tbody");
-var $dateTimeInput = document.querySelector("#date_time");
-var $cityInput = document.querySelector("#city");
-var $stateInput = document.querySelector("#state");
-var $countryInput = document.querySelector("#country");
-var $shapeInput = document.querySelector("#shape");
-var $searchBtn = document.querySelector("#search");
-var $recordCounter = document.querySelector("#recordCounter");
-var $pages = document.querySelector("#pages");
-var $loadBtn = document.querySelector("#load");
-var $nextBtn = document.querySelector("#next");
-var $prevBtn = document.querySelector("#prev");
-$searchBtn.addEventListener("click", handleSearchButtonClick);
-$loadBtn.addEventListener("click", handleReloadButtonClick);
-$nextBtn.addEventListener("click", handleNextButtonClick);
-$prevBtn.addEventListener("click", handlePrevButtonClick);
-$pages.addEventListener("change", handlePagesChange);
-var filteredData = data;
+var shape = document.querySelector("#shape");
+var state = document.querySelector("#state");
+var t_body = document.querySelector("tbody");
+var city = document.querySelector("#city");
+var prev = document.querySelector("#prev");
+var load = document.querySelector("#load");
+var country = document.querySelector("#country");
+var datetime = document.querySelector("#date_time");
+var search = document.querySelector("#search");
+var records = document.querySelector("#recordCounter");
+var pages = document.querySelector("#pages");
+
+var next = document.querySelector("#next");
+load.addEventListener("click", handleReloadButtonClick);
+search.addEventListener("click", handleSearchButtonClick);
+prev.addEventListener("click", handlePrevButtonClick);
+pages.addEventListener("change", handlePagesChange);
+next.addEventListener("click", handleNextButtonClick);
+
+var fdata = data;
 var count = 0;
 function handleNextButtonClick() {
     count++;
-    renderTable();
+    rENDerTable();
 }
 function handlePrevButtonClick() {
     count--;
-    renderTable();
+    rENDerTable();
 }
 function handlePagesChange() {
-    renderTable();
+    rENDerTable();
 }
 function handleSearchButtonClick() {
-    var filterDate = $dateTimeInput.value.trim();
-    var filterCity = $cityInput.value.trim().toLowerCase();
-    var filterState = $stateInput.value.trim().toLowerCase();
-    var filterCountry = $countryInput.value.trim().toLowerCase();
-    var filterShape = $shapeInput.value.trim().toLowerCase();
+    var fdate = datetime.value.trim();
+    var fcity = city.value.trim().toLowerCase();
+    var fstate = state.value.trim().toLowerCase();
+    var fcountry = country.value.trim().toLowerCase();
+    var fshape = shape.value.trim().toLowerCase();
 
-    if (filterDate != "") {
-        filteredData = filteredData.filter(function (date) {
-        var dataDate = date.datetime;
-        return dataDate === filterDate;
-    });
-
-    }
-
-    if (filterCity != "") {
-        filteredData = filteredData.filter(function (city) {
+    if (fcity != "") {
+        fdata = fdata.filter(function (city) {
         var dataCity = city.city;
-        return dataCity === filterCity;
+        return dataCity === fcity;
     });
     }
 
-    if (filterState != "") {
-        filteredData = filteredData.filter(function (state) {
-            var dataState = state.state;
-            return dataState === filterState;
-        });
+    if (fdate != "") {
+        fdata = fdata.filter(function (date) {
+        var dataDate = date.datetime;
+        return dataDate === fdate;
+    });
+
     }
 
-    if (filterCountry != "") {
-        filteredData = filteredData.filter(function (country) {
+    if (fcountry != "") {
+        fdata = fdata.filter(function (country) {
             var dataCountry = country.country;
-            return dataCountry === filterCountry;
+            return dataCountry === fcountry;
         });
     }
 
-    if (filterShape != "") {
-        filteredData = filteredData.filter(function (shape) {
+    if (fstate != "") {
+        fdata = fdata.filter(function (state) {
+            var dataState = state.state;
+            return dataState === fstate;
+        });
+    }
+
+
+    if (fshape != "") {
+        fdata = fdata.filter(function (shape) {
             var dataShape = shape.shape;
-            return dataShape === filterShape;
+            return dataShape === fshape;
         });
     }
 
-    renderTable();
+    rENDerTable();
 }
 function handleReloadButtonClick() {
     count = 0;
-    filteredData = data;
-    $dateTimeInput.value = '';
-    $cityInput.value = '';
-    $stateInput.value = '';
-    $countryInput.value = '';
-    $shapeInput.value = '';
+    fdata = data;
+    datetime.value = '';
+    city.value = '';
+    state.value = '';
+    country.value = '';
+    shape.value = '';
 
-    renderTable();
+    rENDerTable();
 }
-function renderTable() {
+function rENDerTable() {
 
-    $tbody.innerHTML = "";
+    t_body.innerHTML = "";
 
 
     var pages = Number(document.getElementById("pages").value);
 
 
-    var start = count * pages + 1;
-    var end = start + pages - 1;
+    var START = count * pages + 1;
+    var END = START + pages - 1;
     var btn;
 
-
-    if (end > filteredData.length) {
-      end = filteredData.length;
-      btn = document.getElementById("next");
-      btn.disabled = true;
-    }
-    else {
-      btn = document.getElementById("next");
-      btn.disabled = false;
-    }
-
-
-    if (start == 1) {
+    if (START == 1) {
       btn = document.getElementById("prev");
       btn.disabled = true;
     }
@@ -118,20 +109,33 @@ function renderTable() {
     }
 
 
-    $recordCounter.innerText = "From Record: " + start + " to: " + end + " of " + filteredData.length;
+    if (END > fdata.length) {
+      END = fdata.length;
+      btn = document.getElementById("next");
+      btn.disabled = true;
+    }
+    else {
+      btn = document.getElementById("next");
+      btn.disabled = false;
+    }
+
+
+
+
+    records.innerText = "From Record: " + START + " to: " + END + " of " + fdata.length;
 
     for (var i = 0; i < pages; i++) {
-        var item = filteredData[i+(count * pages)];
-        var fields = Object.keys(item);
-        var $row = $tbody.insertRow(i);
+        var items = fdata[i+(count * pages)];
+        var Field = Object.keys(items);
+        var Row = t_body.insertRow(i);
 
-        for (var j = 0; j < fields.length; j++) {
-            var field = fields[j];
-            var $cell = $row.insertCell(j);
-            $cell.innerText = item[field];
+        for (var j = 0; j < Field.length; j++) {
+            var field = Field[j];
+            var Cell = Row.insertCell(j);
+            Cell.innerText = items[field];
         }
     }
 }
 
 
-renderTable();
+rENDerTable();
